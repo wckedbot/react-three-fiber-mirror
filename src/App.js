@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+import { render } from 'react-dom'
+import React, { Suspense } from 'react'
+import { Canvas } from 'react-three-fiber'
+import { useProgress, Html } from '@react-three/drei'
+
+import Scene1 from './pages/Scene1';
 import './App.css';
 
-function App() {
+function Loader() {
+  const { progress } = useProgress()
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Html center>
+      <span style={{ color: '#FFFFFF' }}>{progress} % loaded</span>
+    </Html>
+  )
+}
+
+function App(props) {
+  const { scene = 1 } = props
+  return (
+    <Canvas concurrent shadowMap camera={{ position: [0, 0, 5], fov: 70 }}>
+      <color attach="background" args={['#000']} />
+      <Suspense fallback={<Loader />}>
+        {scene === 1 && <Scene1 />}
+      </Suspense>
+      <ambientLight intensity={0.4} />
+    </Canvas>
+  )
 }
 
 export default App;
